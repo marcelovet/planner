@@ -27,15 +27,26 @@ function updateDashboardCards() {
   const desempenhoMedio =
     questoesTotal > 0 ? ((acertosTotal / questoesTotal) * 100).toFixed(1) : 0;
 
+  let totalCH = 0;
+  materias.forEach((materia, index) => {
+    const chMateria = materia.pdfs * chPorAula;
+    totalCH += chMateria;
+  });
+
+  const chPorDia = parseFloat(document.getElementById('chPorDia').value || 6);
+  const primeiraLeitura = totalCH;
+  const revisoes = totalCH / 2;
+  const total = primeiraLeitura + revisoes;
+  const diasTotal = Math.ceil(total / chPorDia);
+  const semanasTotal = Math.ceil(diasTotal / 7);
+
   document.getElementById('tempoTotal').textContent = `${tempoTotal.toFixed(
     0
   )}h`;
   document.getElementById(
     'desempenhoMedio'
   ).textContent = `${desempenhoMedio}%`;
-  document.getElementById('semanasEstudo').textContent = Math.ceil(
-    tempoTotal / 42
-  );
+  document.getElementById('semanasEstudo').textContent = semanasTotal;
   document.getElementById('questoesFeitas').textContent = questoesTotal;
 }
 

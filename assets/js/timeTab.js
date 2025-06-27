@@ -46,7 +46,8 @@ function renderMaterias() {
     totalCH += chMateria;
 
     row.innerHTML = `
-      <td class="p-3">
+    <td class="p-3 text-center font-medium">${index + 1}</td>
+    <td class="p-3">
         <input type="text" value="${materia.nome}"
                class="w-full bg-transparent border-none p-0 font-medium text-base focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
                onchange="updateMateria(${index}, 'nome', this.value)">
@@ -102,4 +103,7 @@ function updateTotals(totalCH) {
   document.getElementById(
     'semanasTotal'
   ).textContent = `${semanasTotal} semanas`;
+  document.getElementById(
+    'disciplinasTotal'
+  ).textContent = `${materias.length} disciplinas`;
 }
