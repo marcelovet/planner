@@ -1,6 +1,7 @@
 let cronogramaSemanal = {};
 
 // Função para obter semanas necessárias calculadas
+// Schedule tab functions
 function getSemanasNecessarias() {
   const tempoTotal = materias.reduce(
     (sum, m) =>
@@ -15,17 +16,14 @@ function getSemanasNecessarias() {
   return Math.ceil(diasTotal / 7);
 }
 
-// Initialize cronograma tab
 function initCronogramaTab() {
   const container = document.getElementById('cronogramaContent');
   if (!container) return;
 
-  // Atualiza opções de semana com base no cálculo
   updateSemanaOptions();
 
   const semana = parseInt(document.getElementById('semanaAtual').value);
 
-  // Inicializa cronograma da semana se não existir
   if (!cronogramaSemanal[semana]) {
     cronogramaSemanal[semana] = {
       segunda: [],
@@ -41,7 +39,6 @@ function initCronogramaTab() {
   renderCronograma(semana);
 }
 
-// Atualiza as opções de semana no select
 function updateSemanaOptions() {
   const select = document.getElementById('semanaAtual');
   const semanasNecessarias = getSemanasNecessarias();
@@ -57,14 +54,12 @@ function updateSemanaOptions() {
     if (valorAnterior && parseInt(valorAnterior) === i) {
       option.selected = true;
     } else if (!valorAnterior && i === 1) {
-      // Se não havia seleção anterior, seleciona a primeira
       option.selected = true;
     }
     select.appendChild(option);
   }
 }
 
-// Renderiza o cronograma
 function renderCronograma(semana) {
   const container = document.getElementById('cronogramaContent');
   const diasSemana = [
@@ -90,7 +85,6 @@ function renderCronograma(semana) {
     <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
       <h3 class="font-semibold text-blue-900 dark:text-blue-300 mb-2">Semana ${semana}</h3>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-7 gap-4">
   `;
 
@@ -102,7 +96,6 @@ function renderCronograma(semana) {
         </div>
     `;
 
-    // Renderiza disciplinas do dia
     const disciplinasDia = cronogramaSemanal[semana][dia] || [];
 
     disciplinasDia.forEach((disc, discIndex) => {
@@ -127,29 +120,22 @@ function renderCronograma(semana) {
       `;
     });
 
-    // Botão para adicionar disciplina
     html += `
       <button onclick="showAddDisciplinaModal(${semana}, '${dia}')"
               class="w-full p-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded text-sm text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-colors">
         + Adicionar
       </button>
+    </div>
     `;
-
-    html += `</div>`;
   });
 
   html += `</div>`;
-
-  // Adiciona resumo da semana
   html += renderResumoSemana(semana);
 
   container.innerHTML = html;
-
-  // Adiciona event listeners
   setupCronogramaListeners();
 }
 
-// Renderiza resumo da semana
 function renderResumoSemana(semana) {
   const diasSemana = [
     'segunda',
@@ -200,24 +186,21 @@ function renderResumoSemana(semana) {
   });
 
   html += `
-          </div>
         </div>
       </div>
     </div>
+  </div>
   `;
 
   return html;
 }
 
-// Mostra modal para adicionar disciplina
 function showAddDisciplinaModal(semana, dia) {
-  // Remove modal existente se houver
   const existingModal = document.getElementById('addDisciplinaModal');
   if (existingModal) {
     existingModal.remove();
   }
 
-  // Cria modal
   const modal = document.createElement('div');
   modal.id = 'addDisciplinaModal';
   modal.className =
@@ -236,13 +219,11 @@ function showAddDisciplinaModal(semana, dia) {
   modal.innerHTML = `
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] flex flex-col">
       <h3 class="text-lg font-semibold mb-4">Adicionar Disciplinas</h3>
-
       <div class="flex-1 overflow-y-auto mb-4">
         <div class="space-y-1">
           ${optionsHtml}
         </div>
       </div>
-
       <div class="mb-4">
         <label class="block text-sm font-medium mb-2">Horas por disciplina:</label>
         <input type="number"
@@ -253,7 +234,6 @@ function showAddDisciplinaModal(semana, dia) {
                step="0.5"
                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
       </div>
-
       <div class="flex justify-end space-x-3">
         <button onclick="closeAddDisciplinaModal()"
                 class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
@@ -269,7 +249,6 @@ function showAddDisciplinaModal(semana, dia) {
 
   document.body.appendChild(modal);
 
-  // Fecha modal ao clicar fora
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       closeAddDisciplinaModal();
@@ -277,7 +256,6 @@ function showAddDisciplinaModal(semana, dia) {
   });
 }
 
-// Fecha modal de adicionar disciplina
 function closeAddDisciplinaModal() {
   const modal = document.getElementById('addDisciplinaModal');
   if (modal) {
@@ -285,7 +263,6 @@ function closeAddDisciplinaModal() {
   }
 }
 
-// Adiciona disciplinas selecionadas ao dia
 function addDisciplinasSelecionadas(semana, dia) {
   const modal = document.getElementById('addDisciplinaModal');
   const checkboxes = modal.querySelectorAll('input[type="checkbox"]:checked');
@@ -299,30 +276,26 @@ function addDisciplinasSelecionadas(semana, dia) {
     });
   });
 
+  StorageManager.saveAllData();
   closeAddDisciplinaModal();
   renderCronograma(semana);
 }
 
-// Remove disciplina do dia
 function removeDisciplinaDia(semana, dia, index) {
   cronogramaSemanal[semana][dia].splice(index, 1);
+  StorageManager.saveAllData();
   renderCronograma(semana);
 }
 
-// Atualiza horas de uma disciplina
 function updateHorasDisciplina(semana, dia, index, horas) {
   cronogramaSemanal[semana][dia][index].horas = parseFloat(horas) || 0;
+  StorageManager.saveAllData();
   renderCronograma(semana);
 }
 
-// Configura event listeners do cronograma
 function setupCronogramaListeners() {
   const semanaSelect = document.getElementById('semanaAtual');
-
-  // Remove listener anterior se existir
   semanaSelect.removeEventListener('change', initCronogramaTab);
-
-  // Adiciona novo listener
   semanaSelect.addEventListener('change', initCronogramaTab);
 }
 

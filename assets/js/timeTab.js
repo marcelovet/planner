@@ -1,4 +1,4 @@
-// Initialize tempo tab
+// Time tab functions
 function initTempoTab() {
   const tabela = document.getElementById('materiasTabela');
   if (!tabela) return;
@@ -6,11 +6,13 @@ function initTempoTab() {
   renderMaterias();
   setupAddMateriaButton();
 
-  // Add event listeners to update calculations
   ['chPorAula', 'chPorDia', 'diasPorMes'].forEach((id) => {
     const element = document.getElementById(id);
     if (element) {
-      element.addEventListener('input', renderMaterias);
+      element.addEventListener('input', () => {
+        renderMaterias();
+        StorageManager.saveAllData();
+      });
     }
   });
 }
@@ -31,7 +33,6 @@ function renderMaterias() {
   let totalPdfs = 0;
   let totalCH = 0;
 
-  // Renderiza tabela de matérias
   materias.forEach((materia, index) => {
     const row = document.createElement('tr');
     row.className = 'border-b border-gray-200 dark:border-gray-700';
@@ -45,31 +46,29 @@ function renderMaterias() {
     totalCH += chMateria;
 
     row.innerHTML = `
-                <td class="p-3">
-                    <input type="text" value="${materia.nome}"
-                           class="w-full bg-transparent border-none p-0 font-medium text-base focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
-                           onchange="updateMateria(${index}, 'nome', this.value)">
-                </td>
-                <td class="p-3 text-center">
-                    <input type="number" value="${materia.pdfs}"
-                           class="w-20 text-center bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                           onchange="updateMateria(${index}, 'pdfs', this.value)">
-                </td>
-                <td class="p-3 text-center font-medium">${chMateria.toFixed(
-                  1
-                )}h</td>
-                <td class="p-3 text-center">
-                    <input type="number" value="${materia.peso}"
-                           class="w-16 text-center bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                           onchange="updateMateria(${index}, 'peso', this.value)">
-                </td>
-                <td class="p-3 text-center">
-                    <button onclick="removeMateria(${index})"
-                            class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                        🗑️
-                    </button>
-                </td>
-            `;
+      <td class="p-3">
+        <input type="text" value="${materia.nome}"
+               class="w-full bg-transparent border-none p-0 font-medium text-base focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
+               onchange="updateMateria(${index}, 'nome', this.value)">
+      </td>
+      <td class="p-3 text-center">
+        <input type="number" value="${materia.pdfs}"
+               class="w-20 text-center bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+               onchange="updateMateria(${index}, 'pdfs', this.value)">
+      </td>
+      <td class="p-3 text-center font-medium">${chMateria.toFixed(1)}h</td>
+      <td class="p-3 text-center">
+        <input type="number" value="${materia.peso}"
+               class="w-16 text-center bg-transparent border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+               onchange="updateMateria(${index}, 'peso', this.value)">
+      </td>
+      <td class="p-3 text-center">
+        <button onclick="removeMateria(${index})"
+                class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+          🗑️
+        </button>
+      </td>
+    `;
     tabela.appendChild(row);
   });
 
@@ -82,7 +81,6 @@ function updateTotals(totalCH) {
     document.getElementById('diasPorMes').value || 26
   );
 
-  // Update totals
   const primeiraLeitura = totalCH;
   const revisoes = totalCH / 2;
   const total = primeiraLeitura + revisoes;
@@ -93,7 +91,6 @@ function updateTotals(totalCH) {
   document.getElementById('revisoes').textContent = `${revisoes.toFixed(0)}h`;
   document.getElementById('totalEdital').textContent = `${total.toFixed(0)}h`;
 
-  // Calculate additional metrics
   const diasTotal = Math.ceil(total / chPorDia);
   const mesesTotal = Math.ceil(diasTotal / diasPorMes);
   const semanasTotal = Math.ceil(diasTotal / 7);

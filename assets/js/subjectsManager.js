@@ -1,3 +1,4 @@
+// Subject management functions
 function addMateria() {
   const novaMateria = {
     nome: 'Nova Disciplina',
@@ -7,7 +8,6 @@ function addMateria() {
 
   materias.push(novaMateria);
 
-  // Adiciona dados de desempenho zerados
   performanceData[novaMateria.nome] = {
     aulas: 0,
     questoes: 0,
@@ -15,6 +15,7 @@ function addMateria() {
     desempenho: 0,
   };
 
+  StorageManager.saveAllData();
   renderMaterias();
   updateDashboardCards();
 }
@@ -29,6 +30,7 @@ function removeMateria(index) {
   if (confirm(`Tem certeza que deseja remover "${materia.nome}"?`)) {
     delete performanceData[materia.nome];
     materias.splice(index, 1);
+    StorageManager.saveAllData();
     renderMaterias();
     updateDashboardCards();
     initDesempenhoTab();
@@ -40,7 +42,6 @@ function updateMateria(index, field, value) {
 
   if (field === 'nome') {
     materias[index][field] = value;
-    // Atualiza chave no objeto de performance
     if (performanceData[oldName] && value !== oldName) {
       performanceData[value] = performanceData[oldName];
       delete performanceData[oldName];
@@ -49,6 +50,7 @@ function updateMateria(index, field, value) {
     materias[index][field] = parseFloat(value) || 0;
   }
 
+  StorageManager.saveAllData();
   renderMaterias();
   updateDashboardCards();
 }

@@ -1,4 +1,4 @@
-// Navegação das abas
+// Tab navigation
 function initTabs() {
   const tabButtons = document.querySelectorAll('.nav-tab');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -7,7 +7,6 @@ function initTabs() {
     button.addEventListener('click', () => {
       const targetTab = button.getAttribute('data-tab');
 
-      // Remove estado ativo de todas as abas
       tabButtons.forEach((btn) => {
         btn.classList.remove('border-primary', 'text-primary');
         btn.classList.add(
@@ -19,7 +18,6 @@ function initTabs() {
         );
       });
 
-      // Adiciona estado ativo à aba clicada
       button.classList.add('border-primary', 'text-primary');
       button.classList.remove(
         'border-transparent',
@@ -29,16 +27,13 @@ function initTabs() {
         'dark:hover:text-gray-300'
       );
 
-      // Esconde todos os conteúdos
       tabContents.forEach((content) => {
         content.classList.add('hidden');
       });
 
-      // Mostra conteúdo da aba selecionada
       document.getElementById(targetTab).classList.remove('hidden');
       document.getElementById(targetTab).classList.add('fade-in');
 
-      // Inicializa conteúdo específico da aba
       if (targetTab === 'dashboard') {
         initDashboard();
       } else if (targetTab === 'tempo') {
