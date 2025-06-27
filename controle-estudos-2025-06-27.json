@@ -1,0 +1,443 @@
+{
+  "version": "1.0",
+  "date": "2025-06-27T19:09:53.117Z",
+  "materias": [
+    {
+      "nome": "Administração Financeira e Orçamentária",
+      "pdfs": 15,
+      "peso": 1
+    },
+    {
+      "nome": "Auditoria",
+      "pdfs": 12,
+      "peso": 1
+    },
+    {
+      "nome": "Contabilidade",
+      "pdfs": 33,
+      "peso": 1
+    },
+    {
+      "nome": "Contabilidade de custos",
+      "pdfs": 8,
+      "peso": 1
+    },
+    {
+      "nome": "Contabilidade geral e avançada",
+      "pdfs": 41,
+      "peso": 1
+    },
+    {
+      "nome": "Contabilidade pública",
+      "pdfs": 25,
+      "peso": 1
+    },
+    {
+      "nome": "Provas discursivas",
+      "pdfs": 6,
+      "peso": 1
+    },
+    {
+      "nome": "Economia e finanças públicas",
+      "pdfs": 25,
+      "peso": 1
+    },
+    {
+      "nome": "Estatística",
+      "pdfs": 18,
+      "peso": 1
+    },
+    {
+      "nome": "Informática",
+      "pdfs": 18,
+      "peso": 1
+    },
+    {
+      "nome": "Lógica e matemática",
+      "pdfs": 33,
+      "peso": 1
+    },
+    {
+      "nome": "Português",
+      "pdfs": 17,
+      "peso": 1
+    },
+    {
+      "nome": "Tecnologia da informação",
+      "pdfs": 48,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Administrativo",
+      "pdfs": 17,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Civil - prof Paulo Souza",
+      "pdfs": 16,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Constitucional",
+      "pdfs": 22,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Empresarial",
+      "pdfs": 13,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Penal",
+      "pdfs": 12,
+      "peso": 1
+    },
+    {
+      "nome": "Dir. Tributário",
+      "pdfs": 22,
+      "peso": 1
+    },
+    {
+      "nome": "Leg. Tributária Estadual",
+      "pdfs": 6,
+      "peso": 1
+    },
+    {
+      "nome": "Leg. Tributária Municipal",
+      "pdfs": 8,
+      "peso": 1
+    },
+    {
+      "nome": "Leg. Tributária sobre Consumo - Reforma tributária",
+      "pdfs": 14,
+      "peso": 1
+    }
+  ],
+  "performance": {
+    "Administração Financeira e Orçamentária": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Auditoria": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Contabilidade": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Contabilidade de custos": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Contabilidade geral e avançada": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Contabilidade pública": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Provas discursivas": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Economia e finanças públicas": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Estatística": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Informática": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Lógica e matemática": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Português": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Tecnologia da informação": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Administrativo": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Civil - prof Paulo Souza": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Constitucional": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Empresarial": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Penal": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Dir. Tributário": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Leg. Tributária Estadual": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Leg. Tributária Municipal": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    },
+    "Leg. Tributária sobre Consumo - Reforma tributária": {
+      "aulas": 0,
+      "questoes": 0,
+      "acertos": 0,
+      "desempenho": 0
+    }
+  },
+  "cronograma": {
+    "1": {
+      "segunda": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "terca": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "quarta": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "quinta": [
+        {
+          "nome": "Português",
+          "horas": 4.5
+        }
+      ],
+      "sexta": [
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "sabado": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "domingo": []
+    },
+    "2": {
+      "segunda": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "terca": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "quarta": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "quinta": [
+        {
+          "nome": "Português",
+          "horas": 4.5
+        }
+      ],
+      "sexta": [
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "sabado": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "domingo": []
+    },
+    "3": {
+      "segunda": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "terca": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "quarta": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2
+        }
+      ],
+      "quinta": [
+        {
+          "nome": "Português",
+          "horas": 4.5
+        }
+      ],
+      "sexta": [
+        {
+          "nome": "Dir. Civil - prof Paulo Souza",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "sabado": [
+        {
+          "nome": "Dir. Constitucional",
+          "horas": 2.5
+        },
+        {
+          "nome": "Português",
+          "horas": 2
+        }
+      ],
+      "domingo": []
+    },
+    "NaN": {
+      "segunda": [],
+      "terca": [],
+      "quarta": [],
+      "quinta": [],
+      "sexta": [],
+      "sabado": [],
+      "domingo": []
+    }
+  },
+  "settings": {
+    "chPorAula": "4",
+    "chPorDia": "4.5",
+    "diasPorMes": "26"
+  }
+}
