@@ -7,6 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./assets/js/tailwind.js"></script>
+    <script
+      src="https://cdn.plot.ly/plotly-3.0.1.min.js"
+      charset="utf-8"
+    ></script>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
   <body
@@ -220,20 +224,17 @@
           </div>
 
           <!-- Gráficos -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
             <div
               class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+              style="height: 500px"
             >
-              <h3 class="text-lg font-semibold mb-4">
-                Distribuição do Tempo por Matéria
-              </h3>
-              <canvas id="tempoChart" class="max-h-80"></canvas>
+              <div id="tempoChart" style="height: 425px"></div>
             </div>
             <div
               class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
             >
-              <h3 class="text-lg font-semibold mb-4">Desempenho por Matéria</h3>
-              <canvas id="desempenhoChart" class="max-h-80"></canvas>
+              <div id="desempenhoChart" style="height: 320px"></div>
             </div>
           </div>
         </div>
