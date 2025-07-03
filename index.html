@@ -11,6 +11,7 @@
       src="https://cdn.plot.ly/plotly-3.0.1.min.js"
       charset="utf-8"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
   <body
@@ -31,6 +32,13 @@
               </div>
             </div>
             <div class="flex items-center space-x-4">
+              <button
+                id="generateReportBtn"
+                class="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/20 hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors"
+                title="Gerar relatório PDF"
+              >
+                📄
+              </button>
               <button
                 id="exportDataBtn"
                 class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -473,6 +481,7 @@
     <script src="./assets/js/performanceTab.js"></script>
     <script src="./assets/js/dashboard.js"></script>
     <script src="./assets/js/routineTab.js"></script>
+    <script src="./assets/js/reportGenerator.js"></script>
     <script src="./assets/js/tabNavigation.js"></script>
     <script>
       // Storage Manager - Handles all data persistence
@@ -775,6 +784,13 @@
           .getElementById('clearDataBtn')
           .addEventListener('click', () => {
             StorageManager.clearAllData();
+          });
+
+        // Setup report generation button
+        document
+          .getElementById('generateReportBtn')
+          .addEventListener('click', () => {
+            generatePDFReport();
           });
       });
     </script>
