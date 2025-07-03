@@ -102,6 +102,12 @@
             >
               Cronograma
             </button>
+            <button
+              class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium whitespace-nowrap"
+              data-tab="rotina"
+            >
+              Minha Rotina
+            </button>
           </div>
         </div>
       </nav>
@@ -428,6 +434,35 @@
             </div>
           </div>
         </div>
+
+        <!-- Rotina Tab -->
+        <div id="rotina" class="tab-content hidden">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold">Minha Rotina</h2>
+              <div class="flex space-x-3">
+                <button
+                  id="clearRotinaBtn"
+                  class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                >
+                  Limpar Tudo
+                </button>
+                <button
+                  id="exportRotinaBtn"
+                  class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                >
+                  Exportar Rotina
+                </button>
+              </div>
+            </div>
+
+            <div id="rotinaContent">
+              <!-- Tabela de rotina será inserida dinamicamente -->
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
@@ -437,6 +472,7 @@
     <script src="./assets/js/timeTab.js"></script>
     <script src="./assets/js/performanceTab.js"></script>
     <script src="./assets/js/dashboard.js"></script>
+    <script src="./assets/js/routineTab.js"></script>
     <script src="./assets/js/tabNavigation.js"></script>
     <script>
       // Storage Manager - Handles all data persistence
@@ -445,6 +481,7 @@
           MATERIAS: 'controleEstudos_materias',
           PERFORMANCE: 'controleEstudos_performance',
           CRONOGRAMA: 'controleEstudos_cronograma',
+          ROTINA: 'controleEstudos_rotina',
           SETTINGS: 'controleEstudos_settings',
           DARK_MODE: 'controleEstudos_darkMode',
         },
@@ -476,6 +513,7 @@
           this.save(this.STORAGE_KEYS.MATERIAS, materias);
           this.save(this.STORAGE_KEYS.PERFORMANCE, performanceData);
           this.save(this.STORAGE_KEYS.CRONOGRAMA, cronogramaSemanal);
+          this.save(this.STORAGE_KEYS.ROTINA, rotinaData);
 
           const settings = {
             chPorAula: document.getElementById('chPorAula')?.value || 6,
@@ -490,6 +528,7 @@
           const savedMaterias = this.load(this.STORAGE_KEYS.MATERIAS);
           const savedPerformance = this.load(this.STORAGE_KEYS.PERFORMANCE);
           const savedCronograma = this.load(this.STORAGE_KEYS.CRONOGRAMA);
+          const savedRotina = this.load(this.STORAGE_KEYS.ROTINA);
           const savedSettings = this.load(this.STORAGE_KEYS.SETTINGS);
           const savedDarkMode = this.load(this.STORAGE_KEYS.DARK_MODE);
 
@@ -504,6 +543,10 @@
 
           if (savedCronograma) {
             Object.assign(cronogramaSemanal, savedCronograma);
+          }
+
+          if (savedRotina) {
+            Object.assign(rotinaData, savedRotina);
           }
 
           if (savedSettings) {
@@ -538,6 +581,7 @@
             materias: materias,
             performance: performanceData,
             cronograma: cronogramaSemanal,
+            rotina: rotinaData,
             settings: {
               chPorAula: document.getElementById('chPorAula')?.value || 6,
               chPorDia: document.getElementById('chPorDia')?.value || 6,
@@ -586,6 +630,13 @@
                 Object.assign(cronogramaSemanal, importedData.cronograma);
               }
 
+              if (importedData.rotina) {
+                Object.keys(rotinaData).forEach(
+                  (key) => delete rotinaData[key]
+                );
+                Object.assign(rotinaData, importedData.rotina);
+              }
+
               if (importedData.settings) {
                 if (document.getElementById('chPorAula')) {
                   document.getElementById('chPorAula').value =
@@ -608,6 +659,7 @@
               initTempoTab();
               initDesempenhoTab();
               initCronogramaTab();
+              initRotinaTab();
 
               alert('Dados importados com sucesso!');
             } catch (error) {
@@ -636,6 +688,7 @@
             Object.keys(cronogramaSemanal).forEach(
               (key) => delete cronogramaSemanal[key]
             );
+            Object.keys(rotinaData).forEach((key) => delete rotinaData[key]);
 
             document.getElementById('chPorAula').value = 6;
             document.getElementById('chPorDia').value = 6;
@@ -646,6 +699,7 @@
             initTempoTab();
             initDesempenhoTab();
             initCronogramaTab();
+            initRotinaTab();
 
             alert('Todos os dados foram limpos!');
           }
@@ -655,6 +709,7 @@
       // Global variables
       let materias = [];
       let performanceData = {};
+      let rotinaData = {};
 
       // Auto-save functionality
       function setupAutoSave() {
@@ -688,6 +743,7 @@
         initTempoTab();
         initDesempenhoTab();
         initCronogramaTab();
+        initRotinaTab();
 
         // Setup auto-save
         setupAutoSave();

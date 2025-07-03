@@ -42,6 +42,8 @@ function initTabs() {
         initDesempenhoTab();
       } else if (targetTab === 'cronograma') {
         initCronogramaTab();
+      } else if (targetTab === 'rotina') {
+        initRotinaTab();
       }
     });
   });
