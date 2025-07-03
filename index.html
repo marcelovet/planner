@@ -116,6 +116,12 @@
             >
               Minha Rotina
             </button>
+            <button
+              class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium whitespace-nowrap"
+              data-tab="anotacoes"
+            >
+              Anotações
+            </button>
           </div>
         </div>
       </nav>
@@ -471,6 +477,29 @@
             </div>
           </div>
         </div>
+
+        <!-- Anotações Tab -->
+        <div id="anotacoes" class="tab-content hidden">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold">Anotações</h2>
+              <div class="flex space-x-3">
+                <button
+                  id="clearNotesBtn"
+                  class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                >
+                  Limpar Todas
+                </button>
+              </div>
+            </div>
+
+            <div id="notesContent">
+              <!-- Conteúdo das anotações será inserido dinamicamente -->
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
@@ -481,6 +510,7 @@
     <script src="./assets/js/performanceTab.js"></script>
     <script src="./assets/js/dashboard.js"></script>
     <script src="./assets/js/routineTab.js"></script>
+    <script src="./assets/js/notesTab.js"></script>
     <script src="./assets/js/reportGenerator.js"></script>
     <script src="./assets/js/tabNavigation.js"></script>
     <script>
@@ -491,6 +521,7 @@
           PERFORMANCE: 'controleEstudos_performance',
           CRONOGRAMA: 'controleEstudos_cronograma',
           ROTINA: 'controleEstudos_rotina',
+          NOTES: 'controleEstudos_notes',
           SETTINGS: 'controleEstudos_settings',
           DARK_MODE: 'controleEstudos_darkMode',
         },
@@ -523,6 +554,7 @@
           this.save(this.STORAGE_KEYS.PERFORMANCE, performanceData);
           this.save(this.STORAGE_KEYS.CRONOGRAMA, cronogramaSemanal);
           this.save(this.STORAGE_KEYS.ROTINA, rotinaData);
+          this.save(this.STORAGE_KEYS.NOTES, notesData);
 
           const settings = {
             chPorAula: document.getElementById('chPorAula')?.value || 6,
@@ -538,6 +570,7 @@
           const savedPerformance = this.load(this.STORAGE_KEYS.PERFORMANCE);
           const savedCronograma = this.load(this.STORAGE_KEYS.CRONOGRAMA);
           const savedRotina = this.load(this.STORAGE_KEYS.ROTINA);
+          const savedNotes = this.load(this.STORAGE_KEYS.NOTES);
           const savedSettings = this.load(this.STORAGE_KEYS.SETTINGS);
           const savedDarkMode = this.load(this.STORAGE_KEYS.DARK_MODE);
 
@@ -556,6 +589,11 @@
 
           if (savedRotina) {
             Object.assign(rotinaData, savedRotina);
+          }
+
+          if (savedNotes && Array.isArray(savedNotes)) {
+            notesData.length = 0;
+            notesData.push(...savedNotes);
           }
 
           if (savedSettings) {
@@ -591,6 +629,7 @@
             performance: performanceData,
             cronograma: cronogramaSemanal,
             rotina: rotinaData,
+            notes: notesData,
             settings: {
               chPorAula: document.getElementById('chPorAula')?.value || 6,
               chPorDia: document.getElementById('chPorDia')?.value || 6,
@@ -646,6 +685,11 @@
                 Object.assign(rotinaData, importedData.rotina);
               }
 
+              if (importedData.notes && Array.isArray(importedData.notes)) {
+                notesData.length = 0;
+                notesData.push(...importedData.notes);
+              }
+
               if (importedData.settings) {
                 if (document.getElementById('chPorAula')) {
                   document.getElementById('chPorAula').value =
@@ -669,6 +713,7 @@
               initDesempenhoTab();
               initCronogramaTab();
               initRotinaTab();
+              initNotesTab();
 
               alert('Dados importados com sucesso!');
             } catch (error) {
@@ -698,6 +743,7 @@
               (key) => delete cronogramaSemanal[key]
             );
             Object.keys(rotinaData).forEach((key) => delete rotinaData[key]);
+            notesData.length = 0;
 
             document.getElementById('chPorAula').value = 6;
             document.getElementById('chPorDia').value = 6;
@@ -709,6 +755,7 @@
             initDesempenhoTab();
             initCronogramaTab();
             initRotinaTab();
+            initNotesTab();
 
             alert('Todos os dados foram limpos!');
           }
@@ -719,6 +766,7 @@
       let materias = [];
       let performanceData = {};
       let rotinaData = {};
+      let notesData = [];
 
       // Auto-save functionality
       function setupAutoSave() {
@@ -753,6 +801,7 @@
         initDesempenhoTab();
         initCronogramaTab();
         initRotinaTab();
+        initNotesTab();
 
         // Setup auto-save
         setupAutoSave();
@@ -784,6 +833,13 @@
           .getElementById('clearDataBtn')
           .addEventListener('click', () => {
             StorageManager.clearAllData();
+          });
+
+        // Setup notes clear button
+        document
+          .getElementById('clearNotesBtn')
+          .addEventListener('click', () => {
+            clearAllNotes();
           });
 
         // Setup report generation button

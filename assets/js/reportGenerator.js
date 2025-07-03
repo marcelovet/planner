@@ -308,6 +308,127 @@ function addRotinaSection(doc, yPosition) {
   return yPosition + 20;
 }
 
+function addNotesSection(doc, yPosition) {
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text('4. Minhas Anotações', 20, yPosition);
+  yPosition += 15;
+
+  // Verificar se há anotações
+  if (!notesData || notesData.length === 0) {
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text('Nenhuma anotação cadastrada.', 25, yPosition);
+    return yPosition + 20;
+  }
+
+  // Estatísticas das anotações
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text('Estatísticas das Anotações:', 20, yPosition);
+  yPosition += 8;
+
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'normal');
+  doc.text(`• Total de anotações: ${notesData.length}`, 25, yPosition);
+  yPosition += 6;
+
+  // Calcular estatísticas
+  const totalCaracteres = notesData.reduce(
+    (sum, note) => sum + note.content.length,
+    0
+  );
+  const mediaCaracteres = Math.round(totalCaracteres / notesData.length);
+
+  doc.text(
+    `• Média de caracteres por anotação: ${mediaCaracteres}`,
+    25,
+    yPosition
+  );
+  yPosition += 6;
+
+  // Data da última anotação
+  if (notesData.length > 0) {
+    const ultimaAnotacao = notesData.reduce((latest, note) => {
+      const noteDate = new Date(note.updatedAt || note.createdAt);
+      const latestDate = new Date(latest.updatedAt || latest.createdAt);
+      return noteDate > latestDate ? note : latest;
+    });
+
+    const dataFormatada = new Date(
+      ultimaAnotacao.updatedAt || ultimaAnotacao.createdAt
+    ).toLocaleDateString('pt-BR');
+    doc.text(`• Última atualização: ${dataFormatada}`, 25, yPosition);
+    yPosition += 12;
+  }
+
+  // Listar todas as anotações
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text('Lista de Anotações:', 20, yPosition);
+  yPosition += 8;
+
+  notesData.forEach((note, index) => {
+    // Verificar se precisa de nova página
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      doc.text('4. Minhas Anotações (continuação)', 20, yPosition);
+      yPosition += 15;
+    }
+
+    // Título da anotação
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    const titulo = `${index + 1}. ${note.title}`;
+    doc.text(titulo, 25, yPosition);
+    yPosition += 8;
+
+    // Data da anotação
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    const dataAnotacao = new Date(note.createdAt).toLocaleDateString('pt-BR');
+    doc.text(`Criado em: ${dataAnotacao}`, 25, yPosition);
+
+    if (note.updatedAt) {
+      const dataAtualizacao = new Date(note.updatedAt).toLocaleDateString(
+        'pt-BR'
+      );
+      doc.text(`| Atualizado em: ${dataAtualizacao}`, 85, yPosition);
+    }
+    yPosition += 8;
+
+    // Conteúdo da anotação
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+
+    // Quebrar o texto em linhas para caber na página
+    const maxLineWidth = 165; // largura máxima em pontos
+    const lines = doc.splitTextToSize(note.content, maxLineWidth);
+
+    lines.forEach((line) => {
+      if (yPosition > 280) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text(line, 25, yPosition);
+      yPosition += 5;
+    });
+
+    yPosition += 8; // Espaço entre anotações
+
+    // Linha separadora (exceto na última anotação)
+    if (index < notesData.length - 1) {
+      doc.line(25, yPosition, 185, yPosition);
+      yPosition += 8;
+    }
+  });
+
+  return yPosition + 20;
+}
+
 function getRotinaStats() {
   if (!rotinaData || Object.keys(rotinaData).length === 0) {
     return {
@@ -464,6 +585,15 @@ async function generatePDFReport() {
 
     // Seção 3: Minha Rotina
     yPosition = addRotinaSection(doc, yPosition);
+
+    // Verificar se precisa de nova página para as anotações
+    if (yPosition > 200) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    // Seção 4: Anotações
+    yPosition = addNotesSection(doc, yPosition);
 
     // Salvar o PDF
     const fileName = `relatorio-estudos-${

@@ -44,6 +44,8 @@ function initTabs() {
         initCronogramaTab();
       } else if (targetTab === 'rotina') {
         initRotinaTab();
+      } else if (targetTab === 'anotacoes') {
+        initNotesTab();
       }
     });
   });
