@@ -1,0 +1,439 @@
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Navegação em modo mobile */
+  .nav-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 0;
+    z-index: 40;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .nav-mobile {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  .nav-mobile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+
+  .dark .nav-mobile-item {
+    color: #9ca3af;
+  }
+
+  .nav-mobile-item.active {
+    color: #5d5cde;
+  }
+
+  .nav-mobile-item span {
+    margin-top: 0.25rem;
+  }
+
+  /* Ajuste do conteúdo principal para mobile */
+  main {
+    padding-bottom: 5rem !important;
+  }
+
+  /* Tabelas responsivas */
+  .table-mobile-scroll {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-mobile-scroll table {
+    min-width: 100%;
+  }
+
+  /* Cards em mobile */
+  .mobile-card {
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+  }
+
+  .dark .mobile-card {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  /* Inputs em mobile */
+  input[type='number'],
+  input[type='text'],
+  select,
+  textarea {
+    font-size: 16px !important; /* Evita zoom no iOS */
+  }
+
+  /* Modais em mobile */
+  .modal-mobile {
+    padding: 1rem;
+  }
+
+  .modal-mobile > div {
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+
+  /* Botões flutuantes */
+  .fab-container {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1rem;
+    z-index: 30;
+  }
+
+  .fab {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+
+  .fab:active {
+    transform: scale(0.95);
+  }
+
+  /* Header mobile */
+  .header-mobile {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-mobile h1 {
+    font-size: 1.125rem;
+  }
+
+  /* Gráficos mobile */
+  #tempoChart,
+  #desempenhoChart {
+    height: 300px !important;
+  }
+
+  /* Rotina mobile */
+  .rotina-cell {
+    min-width: 80px;
+    font-size: 0.75rem;
+  }
+
+  /* Performance cards mobile */
+  .performance-card-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Notas mobile */
+  .note-preview {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Swipe to delete */
+  .swipeable {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .swipe-action {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    background: #ef4444;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(100%);
+    transition: transform 0.3s;
+  }
+
+  .swipeable.swiped .swipe-action {
+    transform: translateX(0);
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-tab {
+    padding: 1rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Touch-friendly styles */
+@media (hover: none) {
+  button:active {
+    opacity: 0.8;
+  }
+
+  .hover\:bg-gray-50:active {
+    background-color: #f9fafb;
+  }
+
+  .dark .hover\:bg-gray-700:active {
+    background-color: #374151;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .nav-mobile {
+    padding: 0.25rem 0;
+  }
+
+  main {
+    padding-bottom: 4rem !important;
+  }
+}
+
+/* Swipe indicators */
+.swipe-indicator-left,
+.swipe-indicator-right {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 80px;
+  background: rgba(93, 92, 222, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.swipe-indicator-left {
+  left: 0;
+  border-radius: 0 40px 40px 0;
+  background: linear-gradient(to right, rgba(93, 92, 222, 0.2), transparent);
+}
+
+.swipe-indicator-right {
+  right: 0;
+  border-radius: 40px 0 0 40px;
+  background: linear-gradient(to left, rgba(93, 92, 222, 0.2), transparent);
+}
+
+.swipe-indicator-left::before,
+.swipe-indicator-right::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.swipe-indicator-left::before {
+  border-width: 10px 15px 10px 0;
+  border-color: transparent #5d5cde transparent transparent;
+  margin-left: -5px;
+}
+
+.swipe-indicator-right::before {
+  border-width: 10px 0 10px 15px;
+  border-color: transparent transparent transparent #5d5cde;
+  margin-right: -5px;
+}
+
+.swipe-indicator-left.show,
+.swipe-indicator-right.show {
+  opacity: 1;
+}
+
+/* Swipe hint animation */
+@keyframes swipeHintLeft {
+  0% {
+    transform: translateX(0) translateY(-50%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-10px) translateY(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(-50%);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeHintRight {
+  0% {
+    transform: translateX(0) translateY(-50%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(10px) translateY(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(-50%);
+    opacity: 0;
+  }
+}
+
+.swipe-hint-left {
+  animation: swipeHintLeft 2s ease-in-out;
+}
+
+.swipe-hint-right {
+  animation: swipeHintRight 2s ease-in-out;
+}
+
+/* Swipe tutorial overlay */
+.swipe-tutorial {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.swipe-tutorial.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.swipe-tutorial-content {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 300px;
+  text-align: center;
+  position: relative;
+}
+
+.dark .swipe-tutorial-content {
+  background: #1f2937;
+}
+
+.swipe-tutorial-animation {
+  width: 100px;
+  height: 60px;
+  margin: 0 auto 16px;
+  position: relative;
+}
+
+.swipe-tutorial-hand {
+  width: 40px;
+  height: 40px;
+  background: #5d5cde;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 30px;
+  animation: swipeTutorial 2s ease-in-out infinite;
+}
+
+@keyframes swipeTutorial {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-20px);
+  }
+  75% {
+    transform: translateX(20px);
+  }
+}
+
+.swipe-tutorial-arrows {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.swipe-tutorial-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.swipe-tutorial-arrow.left {
+  border-width: 8px 12px 8px 0;
+  border-color: transparent #5d5cde transparent transparent;
+}
+
+.swipe-tutorial-arrow.right {
+  border-width: 8px 0 8px 12px;
+  border-color: transparent transparent transparent #5d5cde;
+}
+
+/* Progress dots for swipe */
+.swipe-progress {
+  position: fixed;
+  bottom: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 15;
+  transition: opacity 0.3s ease;
+}
+
+.dark .swipe-progress {
+  background: rgba(31, 41, 55, 0.9);
+}
+
+.swipe-progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.dark .swipe-progress-dot {
+  background: #4b5563;
+}
+
+.swipe-progress-dot.active {
+  background: #5d5cde;
+  width: 20px;
+  border-radius: 3px;
+}
+
+@media (min-width: 769px) {
+  .swipe-indicator-left,
+  .swipe-indicator-right,
+  .swipe-tutorial,
+  .swipe-progress {
+    display: none;
+  }
+}

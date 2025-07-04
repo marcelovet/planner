@@ -13,59 +13,110 @@ function initializeNotesData() {
 }
 
 // Renderiza a tabela de anotações
+// Renderiza a tabela de anotações
 function renderNotesTable() {
   const container = document.getElementById('notesContent');
   if (!container) return;
 
+  const isMobile = window.innerWidth <= 768;
+
   let html = `
-    <div class="mb-6 flex justify-between items-center">
+    <div class="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
       <h3 class="text-lg font-semibold">Minhas Anotações</h3>
       <button
         id="addNoteBtn"
-        class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+        class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
       >
         <span>📝</span>
         Adicionar Anotação
       </button>
     </div>
-
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600">
-        <thead>
-          <tr class="bg-gray-50 dark:bg-gray-700">
-            <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold w-16">
-              #
-            </th>
-            <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold min-w-48">
-              Título
-            </th>
-            <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold">
-              Conteúdo
-            </th>
-            <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold w-32">
-              Data
-            </th>
-            <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold w-24">
-              Ações
-            </th>
-          </tr>
-        </thead>
-        <tbody id="notesTableBody">
   `;
 
   if (notesData.length === 0) {
     html += `
-      <tr>
-        <td colspan="5" class="border border-gray-300 dark:border-gray-600 p-8 text-center text-gray-500 dark:text-gray-400">
-          <div class="flex flex-col items-center gap-2">
-            <span class="text-2xl">📝</span>
-            <p>Nenhuma anotação encontrada</p>
-            <p class="text-sm">Clique em "Adicionar Anotação" para começar</p>
-          </div>
-        </td>
-      </tr>
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-4xl sm:text-2xl mb-2">📝</span>
+          <p class="text-lg sm:text-base">Nenhuma anotação encontrada</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Clique em "Adicionar Anotação" para começar</p>
+        </div>
+      </div>
     `;
+  } else if (isMobile) {
+    // Mobile card layout
+    html += '<div class="space-y-3">';
+
+    notesData.forEach((note, index) => {
+      const shortContent =
+        note.content.length > 100
+          ? note.content.substring(0, 100) + '...'
+          : note.content;
+
+      html += `
+        <div class="mobile-card">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-semibold text-base flex-1 pr-2">${escapeHtml(
+              note.title
+            )}</h4>
+            <div class="flex gap-2">
+              <button onclick="editNote(${index})"
+                      class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 p-1">
+                ✏️
+              </button>
+              <button onclick="deleteNote(${index})"
+                      class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1">
+                🗑️
+              </button>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            ${formatDate(note.createdAt)}
+          </p>
+          <div class="text-sm">
+            ${escapeHtml(shortContent)}
+            ${
+              note.content.length > 100
+                ? `
+              <button onclick="viewNote(${index})" class="text-primary hover:underline ml-1 text-xs">
+                Ver mais
+              </button>
+            `
+                : ''
+            }
+          </div>
+        </div>
+      `;
+    });
+
+    html += '</div>';
   } else {
+    // Desktop table layout
+    html += `
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-700">
+              <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold w-16">
+                #
+              </th>
+              <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold min-w-48">
+                Título
+              </th>
+              <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold">
+                Conteúdo
+              </th>
+              <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold w-32">
+                Data
+              </th>
+              <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold w-24">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody id="notesTableBody">
+    `;
+
     notesData.forEach((note, index) => {
       const shortContent =
         note.content.length > 100
@@ -114,13 +165,15 @@ function renderNotesTable() {
         </tr>
       `;
     });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
   html += `
-        </tbody>
-      </table>
-    </div>
-
     <div class="mt-6 text-sm text-gray-600 dark:text-gray-400">
       <p><strong>Estatísticas:</strong></p>
       <ul class="list-disc list-inside mt-2 space-y-1">
