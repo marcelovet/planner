@@ -110,6 +110,9 @@ function setupFAB() {
         case 'anotacoes':
           addNote();
           break;
+        case 'tarefas':
+          addTask();
+          break;
         default:
           break;
       }
@@ -120,8 +123,12 @@ function setupFAB() {
 // Update FAB visibility based on active tab
 function updateFABVisibility(tab) {
   const fabContainer = document.getElementById('fabContainer');
+  const windowWidth = window.innerWidth;
   if (fabContainer) {
-    if (tab === 'tempo' || tab === 'anotacoes') {
+    if (
+      (tab === 'tempo' || tab === 'anotacoes' || tab === 'tarefas') &&
+      windowWidth < 780
+    ) {
       fabContainer.style.display = 'block';
     } else {
       fabContainer.style.display = 'none';

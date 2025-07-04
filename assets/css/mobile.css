@@ -578,3 +578,197 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilos específicos para tarefas em mobile */
+@media (max-width: 768px) {
+  /* Checkbox de tarefas em mobile */
+  input[type='checkbox'].task-checkbox {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  /* Cards de tarefas com status visual */
+  .mobile-card.task-overdue {
+    border-left: 4px solid #ef4444;
+  }
+
+  .mobile-card.task-due-soon {
+    border-left: 4px solid #f59e0b;
+  }
+
+  .mobile-card.task-completed {
+    border-left: 4px solid #10b981;
+  }
+
+  /* Indicadores de prazo em mobile */
+  .task-due-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .task-due-indicator.overdue {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  .dark .task-due-indicator.overdue {
+    background-color: #991b1b;
+    color: #fecaca;
+  }
+
+  .task-due-indicator.due-soon {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+
+  .dark .task-due-indicator.due-soon {
+    background-color: #92400e;
+    color: #fde68a;
+  }
+}
+
+/* Animação para marcar tarefa como concluída */
+@keyframes taskComplete {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+input[type='checkbox']:checked {
+  animation: taskComplete 0.3s ease-in-out;
+}
+
+/* Estilos para modal de tarefas em mobile */
+@media (max-width: 768px) {
+  #taskModal input[type='date'] {
+    min-height: 44px; /* Altura mínima para touch */
+  }
+}
+
+/* Estilos para os novos menus mobile */
+.nav-mobile-top,
+.nav-mobile-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  z-index: 40;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .nav-mobile-top,
+.dark .nav-mobile-bottom {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.nav-mobile-top {
+  top: 0;
+  border-bottom: 1px solid #e5e7eb;
+  border-top: none;
+}
+
+.dark .nav-mobile-top {
+  border-bottom-color: #374151;
+}
+
+.nav-mobile-bottom {
+  bottom: 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: none;
+}
+
+.dark .nav-mobile-bottom {
+  border-top-color: #374151;
+}
+
+.nav-mobile-top .nav-mobile-item,
+.nav-mobile-bottom .nav-mobile-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  transition: color 0.2s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  min-width: 0;
+  flex: 1;
+}
+
+.dark .nav-mobile-top .nav-mobile-item,
+.dark .nav-mobile-bottom .nav-mobile-item {
+  color: #9ca3af;
+}
+
+.nav-mobile-top .nav-mobile-item.active,
+.nav-mobile-bottom .nav-mobile-item.active {
+  color: #5d5cde;
+}
+
+.nav-mobile-top .nav-mobile-item span:first-child,
+.nav-mobile-bottom .nav-mobile-item span:first-child {
+  font-size: 1.25rem;
+  margin-bottom: 0.125rem;
+}
+
+.nav-mobile-top .nav-mobile-item span:last-child,
+.nav-mobile-bottom .nav-mobile-item span:last-child {
+  font-size: 0.625rem;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Ajuste do conteúdo principal para os dois menus */
+@media (max-width: 768px) {
+  main {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    margin-top: 116px; /* Altura do nav superior (52px) + header (64px) */
+    margin-bottom: 52px; /* Altura do menu inferior */
+  }
+
+  /* FAB precisa ficar acima do menu inferior */
+  .fab-container {
+    bottom: 64px; /* 52px do menu + 12px de margem */
+  }
+}
+
+/* Esconder o menu mobile antigo */
+.nav-mobile {
+  display: none !important;
+}
+
+/* Swipe progress precisa ser ajustado */
+.swipe-progress {
+  bottom: 64px; /* Acima do menu inferior */
+}
+
+/* Indicadores de swipe precisam ser ajustados */
+@media (max-width: 768px) {
+  .swipe-indicator-left,
+  .swipe-indicator-right {
+    top: calc(50% + 58px); /* Compensar pelos menus */
+  }
+}
+
+/* Header ajustado para ficar abaixo do nav superior */
+@media (max-width: 768px) {
+  header {
+    margin-top: 52px; /* Altura do nav superior */
+  }
+}

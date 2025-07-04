@@ -25,6 +25,26 @@
     class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors"
   >
     <div class="min-h-screen">
+      <!-- Mobile Top Navigation (Dashboard, Tempo, Desempenho) -->
+      <nav
+        class="nav-mobile-top sm:hidden bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex justify-around">
+          <button class="nav-mobile-item active" data-tab="dashboard">
+            <span>📊</span>
+            <span class="text-xs">Dashboard</span>
+          </button>
+          <button class="nav-mobile-item" data-tab="tempo">
+            <span>⏱️</span>
+            <span class="text-xs">Tempo</span>
+          </button>
+          <button class="nav-mobile-item" data-tab="desempenho">
+            <span>📈</span>
+            <span class="text-xs">Desempenho</span>
+          </button>
+        </div>
+      </nav>
+
       <!-- Header -->
       <header
         class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 header-mobile"
@@ -170,40 +190,20 @@
             >
               Anotações
             </button>
+            <button
+              class="nav-tab py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium whitespace-nowrap"
+              data-tab="tarefas"
+            >
+              Tarefas
+            </button>
           </div>
         </div>
       </nav>
 
-      <!-- Mobile Navigation -->
-      <nav class="nav-mobile sm:hidden">
-        <button class="nav-mobile-item active" data-tab="dashboard">
-          <span>📊</span>
-          <span>Dashboard</span>
-        </button>
-        <button class="nav-mobile-item" data-tab="tempo">
-          <span>⏱️</span>
-          <span>Tempo</span>
-        </button>
-        <button class="nav-mobile-item" data-tab="desempenho">
-          <span>📈</span>
-          <span>Desempenho</span>
-        </button>
-        <button class="nav-mobile-item" data-tab="cronograma">
-          <span>📅</span>
-          <span>Cronograma</span>
-        </button>
-        <button class="nav-mobile-item" data-tab="rotina">
-          <span>🗓️</span>
-          <span>Rotina</span>
-        </button>
-        <button class="nav-mobile-item" data-tab="anotacoes">
-          <span>📝</span>
-          <span>Notas</span>
-        </button>
-      </nav>
-
       <!-- Main Content -->
-      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <main
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-20 sm:pb-8"
+      >
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content">
           <div
@@ -601,7 +601,54 @@
             </div>
           </div>
         </div>
+
+        <!-- Tarefas Tab -->
+        <div id="tarefas" class="tab-content hidden">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700"
+          >
+            <div
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2"
+            >
+              <h2 class="text-xl sm:text-2xl font-bold">Tarefas</h2>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <button
+                  id="clearTasksBtn"
+                  class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors w-full sm:w-auto"
+                >
+                  Limpar Todas
+                </button>
+              </div>
+            </div>
+
+            <div id="tasksContent">
+              <!-- Conteúdo das tarefas será inserido dinamicamente -->
+            </div>
+          </div>
+        </div>
       </main>
+
+      <!-- Mobile Bottom Navigation (Cronograma, Rotina, Anotações, Tarefas) -->
+      <nav class="nav-mobile-bottom sm:hidden">
+        <div class="flex justify-around">
+          <button class="nav-mobile-item" data-tab="cronograma">
+            <span>📅</span>
+            <span class="text-xs">Cronograma</span>
+          </button>
+          <button class="nav-mobile-item" data-tab="rotina">
+            <span>🗓️</span>
+            <span class="text-xs">Rotina</span>
+          </button>
+          <button class="nav-mobile-item" data-tab="anotacoes">
+            <span>📝</span>
+            <span class="text-xs">Notas</span>
+          </button>
+          <button class="nav-mobile-item" data-tab="tarefas">
+            <span>✅</span>
+            <span class="text-xs">Tarefas</span>
+          </button>
+        </div>
+      </nav>
 
       <!-- FAB for mobile add actions -->
       <div
@@ -622,6 +669,7 @@
     <script src="./assets/js/chartHelpers.js"></script>
     <script src="./assets/js/routineTab.js"></script>
     <script src="./assets/js/notesTab.js"></script>
+    <script src="./assets/js/tasksTab.js"></script>
     <script src="./assets/js/reportGenerator.js"></script>
     <script src="./assets/js/tabNavigation.js"></script>
     <script src="./assets/js/mobileEnhancements.js"></script>
@@ -634,6 +682,7 @@
           CRONOGRAMA: 'controleEstudos_cronograma',
           ROTINA: 'controleEstudos_rotina',
           NOTES: 'controleEstudos_notes',
+          TASKS: 'controleEstudos_tasks',
           SETTINGS: 'controleEstudos_settings',
           DARK_MODE: 'controleEstudos_darkMode',
         },
@@ -667,6 +716,7 @@
           this.save(this.STORAGE_KEYS.CRONOGRAMA, cronogramaSemanal);
           this.save(this.STORAGE_KEYS.ROTINA, rotinaData);
           this.save(this.STORAGE_KEYS.NOTES, notesData);
+          this.save(this.STORAGE_KEYS.TASKS, tasksData);
 
           const settings = {
             chPorAula: document.getElementById('chPorAula')?.value || 6,
@@ -685,6 +735,7 @@
           const savedNotes = this.load(this.STORAGE_KEYS.NOTES);
           const savedSettings = this.load(this.STORAGE_KEYS.SETTINGS);
           const savedDarkMode = this.load(this.STORAGE_KEYS.DARK_MODE);
+          const savedTasks = this.load(this.STORAGE_KEYS.TASKS);
 
           if (savedMaterias && savedMaterias.length > 0) {
             materias.length = 0;
@@ -706,6 +757,11 @@
           if (savedNotes && Array.isArray(savedNotes)) {
             notesData.length = 0;
             notesData.push(...savedNotes);
+          }
+
+          if (savedTasks && Array.isArray(savedTasks)) {
+            tasksData.length = 0;
+            tasksData.push(...savedTasks);
           }
 
           if (savedSettings) {
@@ -742,6 +798,7 @@
             cronograma: cronogramaSemanal,
             rotina: rotinaData,
             notes: notesData,
+            tasks: tasksData,
             settings: {
               chPorAula: document.getElementById('chPorAula')?.value || 6,
               chPorDia: document.getElementById('chPorDia')?.value || 6,
@@ -802,6 +859,11 @@
                 notesData.push(...importedData.notes);
               }
 
+              if (importedData.tasks && Array.isArray(importedData.tasks)) {
+                tasksData.length = 0;
+                tasksData.push(...importedData.tasks);
+              }
+
               if (importedData.settings) {
                 if (document.getElementById('chPorAula')) {
                   document.getElementById('chPorAula').value =
@@ -856,6 +918,7 @@
             );
             Object.keys(rotinaData).forEach((key) => delete rotinaData[key]);
             notesData.length = 0;
+            tasksData.length = 0;
 
             document.getElementById('chPorAula').value = 6;
             document.getElementById('chPorDia').value = 6;
@@ -868,6 +931,7 @@
             initCronogramaTab();
             initRotinaTab();
             initNotesTab();
+            initTasksTab();
 
             alert('Todos os dados foram limpos!');
           }
@@ -879,6 +943,7 @@
       let performanceData = {};
       let rotinaData = {};
       let notesData = [];
+      let tasksData = [];
 
       // Auto-save functionality
       function setupAutoSave() {
@@ -955,6 +1020,13 @@
           .getElementById('clearNotesBtn')
           .addEventListener('click', () => {
             clearAllNotes();
+          });
+
+        // Setup tasks clear button
+        document
+          .getElementById('clearTasksBtn')
+          .addEventListener('click', () => {
+            clearAllTasks();
           });
 
         // Setup report generation button

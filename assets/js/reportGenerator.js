@@ -429,6 +429,154 @@ function addNotesSection(doc, yPosition) {
   return yPosition + 20;
 }
 
+function addTasksSection(doc, yPosition) {
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text('5. Minhas Tarefas', 20, yPosition);
+  yPosition += 15;
+
+  // Verificar se há tarefas
+  if (!tasksData || tasksData.length === 0) {
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text('Nenhuma tarefa cadastrada.', 25, yPosition);
+    return yPosition + 20;
+  }
+
+  // Estatísticas das tarefas
+  const stats = getTasksStats();
+
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text('Estatísticas das Tarefas:', 20, yPosition);
+  yPosition += 8;
+
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'normal');
+  doc.text(`• Total de tarefas: ${stats.total}`, 25, yPosition);
+  yPosition += 6;
+  doc.text(
+    `• Tarefas concluídas: ${stats.completed} (${stats.completionRate}%)`,
+    25,
+    yPosition
+  );
+  yPosition += 6;
+  doc.text(`• Tarefas pendentes: ${stats.pending}`, 25, yPosition);
+  yPosition += 6;
+  doc.text(`• Tarefas em atraso: ${stats.overdue}`, 25, yPosition);
+  yPosition += 12;
+
+  // Listar tarefas pendentes
+  const pendingTasks = tasksData.filter((t) => !t.completed);
+  if (pendingTasks.length > 0) {
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Tarefas Pendentes:', 20, yPosition);
+    yPosition += 8;
+
+    pendingTasks.forEach((task, index) => {
+      // Verificar se precisa de nova página
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text('5. Minhas Tarefas (continuação)', 20, yPosition);
+        yPosition += 15;
+      }
+
+      // Título da tarefa
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      const titulo = `${index + 1}. ${task.title}`;
+      doc.text(titulo, 25, yPosition);
+      yPosition += 6;
+
+      // Data limite
+      if (task.dueDate) {
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        const dueDate = new Date(task.dueDate);
+        const isOverdue = dueDate < new Date();
+        const dueDateText = `Data limite: ${dueDate.toLocaleDateString(
+          'pt-BR'
+        )}${isOverdue ? ' (ATRASADA)' : ''}`;
+
+        if (isOverdue) {
+          doc.setTextColor(255, 0, 0); // Vermelho para tarefas atrasadas
+        }
+        doc.text(dueDateText, 25, yPosition);
+        doc.setTextColor(0, 0, 0); // Volta para preto
+        yPosition += 6;
+      }
+
+      // Descrição da tarefa
+      if (task.description) {
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        const maxLineWidth = 165;
+        const lines = doc.splitTextToSize(task.description, maxLineWidth);
+
+        lines.forEach((line) => {
+          if (yPosition > 280) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          doc.text(line, 25, yPosition);
+          yPosition += 5;
+        });
+      }
+
+      yPosition += 4; // Espaço entre tarefas
+    });
+  }
+
+  // Listar tarefas concluídas (resumo)
+  const completedTasks = tasksData.filter((t) => t.completed);
+  if (completedTasks.length > 0) {
+    yPosition += 8;
+
+    if (yPosition > 240) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Tarefas Concluídas:', 20, yPosition);
+    yPosition += 8;
+
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+
+    completedTasks.slice(0, 10).forEach((task) => {
+      if (yPosition > 280) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      const completedDate = task.completedAt
+        ? ` - Concluída em ${new Date(task.completedAt).toLocaleDateString(
+            'pt-BR'
+          )}`
+        : '';
+      doc.text(`• ${task.title}${completedDate}`, 25, yPosition);
+      yPosition += 5;
+    });
+
+    if (completedTasks.length > 10) {
+      yPosition += 3;
+      doc.text(
+        `... e mais ${completedTasks.length - 10} tarefas concluídas`,
+        25,
+        yPosition
+      );
+    }
+  }
+
+  return yPosition + 20;
+}
+
 function getRotinaStats() {
   if (!rotinaData || Object.keys(rotinaData).length === 0) {
     return {
@@ -594,6 +742,15 @@ async function generatePDFReport() {
 
     // Seção 4: Anotações
     yPosition = addNotesSection(doc, yPosition);
+
+    // Verificar se precisa de nova página para as tarefas
+    if (yPosition > 200) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    // Seção 5: Tarefas
+    yPosition = addTasksSection(doc, yPosition);
 
     // Salvar o PDF
     const fileName = `relatorio-estudos-${
