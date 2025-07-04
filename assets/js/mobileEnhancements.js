@@ -9,6 +9,7 @@ function initMobileEnhancements() {
   setupSwipeIndicators();
   setupSwipeTutorial();
   setupSwipeProgress();
+  optimizeChartsForMobile();
 }
 
 // Setup mobile navigation
@@ -636,6 +637,63 @@ document.addEventListener('DOMContentLoaded', () => {
     false
   );
 });
+
+// Otimizar gráficos para mobile
+function optimizeChartsForMobile() {
+  if (window.innerWidth <= 768) {
+    // Adicionar classe para estilização específica mobile
+    document.querySelectorAll('[id$="Chart"]').forEach((chart) => {
+      chart.parentElement.classList.add('mobile-chart-container');
+    });
+
+    // Adicionar gesture de pinch-to-zoom nos gráficos
+    document
+      .querySelectorAll('.mobile-chart-container')
+      .forEach((container) => {
+        let initialDistance = 0;
+        let scale = 1;
+
+        container.addEventListener(
+          'touchstart',
+          (e) => {
+            if (e.touches.length === 2) {
+              initialDistance = getDistance(e.touches[0], e.touches[1]);
+            }
+          },
+          { passive: true }
+        );
+
+        container.addEventListener(
+          'touchmove',
+          (e) => {
+            if (e.touches.length === 2) {
+              const currentDistance = getDistance(e.touches[0], e.touches[1]);
+              scale = currentDistance / initialDistance;
+              container.style.transform = `scale(${Math.min(
+                Math.max(scale, 0.5),
+                2
+              )})`;
+            }
+          },
+          { passive: true }
+        );
+
+        container.addEventListener(
+          'touchend',
+          () => {
+            container.style.transform = '';
+          },
+          { passive: true }
+        );
+      });
+  }
+}
+
+function getDistance(touch1, touch2) {
+  const dx = touch1.clientX - touch2.clientX;
+  const dy = touch1.clientY - touch2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
 // Export functions for global use
 window.initMobileEnhancements = initMobileEnhancements;

@@ -54,152 +54,228 @@ function initCharts() {
   const chPorAula = parseFloat(
     document.getElementById('chPorAula')?.value || 6
   );
+
+  // Ordenar matérias por tempo de estudo (maior para menor)
   const materiasSorted = [...materias].sort(
-    (a, b) => b.pdfs * chPorAula - a.pdfs * chPorAula
+    (a, b) => a.pdfs * chPorAula - b.pdfs * chPorAula
   );
 
-  // Prepare data for pie chart (tempo distribution)
-  const pieData = [
+  // Calcular altura dinâmica baseada no número de disciplinas
+  const isMobile = window.innerWidth <= 768;
+  const barHeight = isMobile ? 30 : 35;
+  const minHeight = isMobile ? 300 : 400;
+  const calculatedHeight = Math.max(
+    minHeight,
+    materiasSorted.length * barHeight + 120
+  );
+
+  // Preparar dados para gráfico de barras horizontais (tempo)
+  const tempoData = [
     {
-      values: materiasSorted.slice(0, 8).map((m) => m.pdfs * chPorAula),
-      labels: materiasSorted.slice(0, 8).map((m) => m.nome),
-      type: 'pie',
-      hole: 0.4, // Creates a donut chart
-      marker: {
-        colors: [
-          '#FF6384',
-          '#36A2EB',
-          '#FFCE56',
-          '#4BC0C0',
-          '#9966FF',
-          '#FF9F40',
-          '#FF6384',
-          '#C9CBCF',
-        ],
-      },
-      textinfo: 'label+percent',
-      textposition: 'outside',
-      hovertemplate:
-        '<b>%{label}</b><br>' +
-        'Tempo: %{value:.1f}h<br>' +
-        'Percentual: %{percent}<br>' +
-        '<extra></extra>',
-    },
-  ];
-
-  const pieLayout = {
-    title: {
-      text: 'Distribuição do Tempo por Matéria',
-      font: {
-        size: 18,
-      },
-    },
-    showlegend: true,
-    legend: {
-      orientation: 'v',
-      x: 1,
-      y: 0.5,
-    },
-    margin: {
-      l: 0,
-      r: 150,
-      t: 50,
-      b: 0,
-    },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-  };
-
-  const pieConfig = {
-    responsive: true,
-    displayModeBar: false,
-  };
-
-  // Create or update pie chart
-  const pieContainer = document.getElementById('tempoChart');
-  if (pieContainer) {
-    Plotly.newPlot('tempoChart', pieData, pieLayout, pieConfig);
-  }
-
-  // Prepare data for bar chart (performance)
-  const barData = [
-    {
-      x: materiasSorted.slice(0, 8).map((m) => m.nome.split(' ')[0]),
-      y: materiasSorted
-        .slice(0, 8)
-        .map((m) => (performanceData[m.nome] || { desempenho: 0 }).desempenho),
+      x: materiasSorted.map((m) => m.pdfs * chPorAula),
+      y: materiasSorted.map((m) => m.nome),
       type: 'bar',
+      orientation: 'h',
       marker: {
-        color: '#5D5CDE',
+        color: materiasSorted.map((m, index) => {
+          // Gradiente de cores baseado na posição
+          const hue = (index * 360) / materiasSorted.length;
+          return `hsl(${hue}, 70%, 60%)`;
+        }),
         line: {
-          color: '#4A49B8',
+          color: 'rgba(0,0,0,0.1)',
           width: 1,
         },
       },
-      text: materiasSorted
-        .slice(0, 8)
-        .map(
-          (m) =>
-            `${(
-              performanceData[m.nome] || { desempenho: 0 }
-            ).desempenho.toFixed(1)}%`
-        ),
+      text: materiasSorted.map((m) => `${(m.pdfs * chPorAula).toFixed(1)}h`),
       textposition: 'outside',
       hovertemplate:
-        '<b>%{x}</b><br>' + 'Desempenho: %{y:.1f}%<br>' + '<extra></extra>',
+        '<b>%{y}</b><br>' +
+        'Tempo: %{x:.1f}h<br>' +
+        'PDFs: ' +
+        materiasSorted
+          .map((m) => m.pdfs)
+          .join('|')
+          .split('|')[materiasSorted.indexOf('%{y}')] +
+        '<br>' +
+        '<extra></extra>',
+      textfont: {
+        size: isMobile ? 10 : 12,
+      },
     },
   ];
 
-  const barLayout = {
+  const tempoLayout = {
     title: {
-      text: 'Desempenho por Matéria',
+      text: 'Distribuição do Tempo por Disciplina',
       font: {
-        size: 18,
+        size: isMobile ? 16 : 18,
       },
     },
     xaxis: {
-      title: 'Matéria',
-      tickangle: -45,
+      title: 'Horas de Estudo',
+      tickformat: '.0f',
+      zeroline: true,
+      showgrid: true,
+      gridcolor: 'rgba(128,128,128,0.2)',
     },
     yaxis: {
-      title: 'Desempenho (%)',
-      range: [0, 110], // Slightly higher than 100 to show text on top
-      tickformat: '.0f',
+      title: '',
+      automargin: true,
+      tickfont: {
+        size: isMobile ? 10 : 12,
+      },
     },
     margin: {
-      l: 60,
-      r: 30,
+      l: isMobile ? 10 : 20,
+      r: isMobile ? 60 : 80,
       t: 50,
-      b: 100,
+      b: 50,
+      pad: 4,
     },
     paper_bgcolor: 'rgba(0,0,0,0)',
     plot_bgcolor: 'rgba(0,0,0,0)',
-    bargap: 0.2,
+    showlegend: false,
+    height: calculatedHeight,
   };
 
-  const barConfig = {
+  const config = {
     responsive: true,
     displayModeBar: false,
   };
 
-  // Create or update bar chart
-  const barContainer = document.getElementById('desempenhoChart');
-  if (barContainer) {
-    Plotly.newPlot('desempenhoChart', barData, barLayout, barConfig);
+  // Criar ou atualizar gráfico de tempo
+  const tempoContainer = document.getElementById('tempoChart');
+  if (tempoContainer) {
+    // Ajustar altura do container
+    tempoContainer.style.height = `${calculatedHeight}px`;
+    tempoContainer.parentElement.style.minHeight = `${calculatedHeight + 50}px`;
+    Plotly.newPlot('tempoChart', tempoData, tempoLayout, config);
   }
 
-  // Store chart instances for potential future use
+  // Preparar dados para gráfico de barras horizontais (desempenho)
+  const desempenhoDataSorted = materiasSorted
+    .map((m) => ({
+      nome: m.nome,
+      desempenho: (performanceData[m.nome] || { desempenho: 0 }).desempenho,
+    }))
+    .sort((a, b) => b.desempenho - a.desempenho);
+
+  const desempenhoData = [
+    {
+      x: desempenhoDataSorted.map((m) => m.desempenho),
+      y: desempenhoDataSorted.map((m) => m.nome),
+      type: 'bar',
+      orientation: 'h',
+      marker: {
+        color: desempenhoDataSorted.map((m) => {
+          // Cores baseadas no desempenho
+          if (m.desempenho >= 80) return '#10B981'; // Verde
+          if (m.desempenho >= 60) return '#F59E0B'; // Amarelo
+          if (m.desempenho >= 40) return '#FB923C'; // Laranja
+          return '#EF4444'; // Vermelho
+        }),
+        line: {
+          color: 'rgba(0,0,0,0.1)',
+          width: 1,
+        },
+      },
+      text: desempenhoDataSorted.map((m) => `${m.desempenho.toFixed(1)}%`),
+      textposition: 'outside',
+      hovertemplate:
+        '<b>%{y}</b><br>' + 'Desempenho: %{x:.1f}%<br>' + '<extra></extra>',
+      textfont: {
+        size: isMobile ? 10 : 12,
+      },
+    },
+  ];
+
+  const desempenhoLayout = {
+    title: {
+      text: 'Desempenho por Disciplina',
+      font: {
+        size: isMobile ? 16 : 18,
+      },
+    },
+    xaxis: {
+      title: 'Desempenho (%)',
+      range: [0, 110],
+      tickformat: '.0f',
+      zeroline: true,
+      showgrid: true,
+      gridcolor: 'rgba(128,128,128,0.2)',
+    },
+    yaxis: {
+      title: '',
+      automargin: true,
+      tickfont: {
+        size: isMobile ? 10 : 12,
+      },
+    },
+    margin: {
+      l: isMobile ? 10 : 20,
+      r: isMobile ? 60 : 80,
+      t: 50,
+      b: 50,
+      pad: 4,
+    },
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    showlegend: false,
+    height: calculatedHeight,
+    shapes: [
+      {
+        type: 'line',
+        x0: 75,
+        y0: -0.5,
+        x1: 75,
+        y1: desempenhoDataSorted.length - 0.5,
+        line: {
+          color: 'rgba(255, 0, 0, 0.3)',
+          width: 2,
+          dash: 'dash',
+        },
+      },
+    ],
+    annotations: [
+      {
+        x: 75,
+        y: desempenhoDataSorted.length,
+        text: 'Meta 75%',
+        showarrow: false,
+        font: {
+          size: isMobile ? 10 : 12,
+          color: 'rgba(255, 0, 0, 0.5)',
+        },
+        xanchor: 'center',
+        yanchor: 'bottom',
+      },
+    ],
+  };
+
+  // Criar ou atualizar gráfico de desempenho
+  const desempenhoContainer = document.getElementById('desempenhoChart');
+  if (desempenhoContainer) {
+    // Ajustar altura do container
+    desempenhoContainer.style.height = `${calculatedHeight}px`;
+    desempenhoContainer.parentElement.style.minHeight = `${
+      calculatedHeight + 50
+    }px`;
+    Plotly.newPlot('desempenhoChart', desempenhoData, desempenhoLayout, config);
+  }
+
+  // Armazenar instâncias dos gráficos
   chartInstances.tempoChart = 'tempoChart';
   chartInstances.desempenhoChart = 'desempenhoChart';
 
-  // Handle dark mode updates
+  // Lidar com atualizações do modo escuro
   const isDarkMode = document.documentElement.classList.contains('dark');
   if (isDarkMode) {
     updateChartsForDarkMode();
   }
 }
 
-// Function to update charts for dark mode
+// Função para atualizar gráficos para modo escuro
 function updateChartsForDarkMode() {
   const darkModeLayout = {
     paper_bgcolor: 'rgba(0,0,0,0)',
@@ -210,35 +286,63 @@ function updateChartsForDarkMode() {
     xaxis: {
       gridcolor: '#374151', // gray-700 in Tailwind
       zerolinecolor: '#374151',
+      tickfont: {
+        color: '#e5e7eb',
+      },
+      title: {
+        font: {
+          color: '#e5e7eb',
+        },
+      },
     },
     yaxis: {
       gridcolor: '#374151',
       zerolinecolor: '#374151',
+      tickfont: {
+        color: '#e5e7eb',
+      },
     },
   };
 
-  // Update tempo chart
+  // Atualizar gráfico de tempo
   Plotly.relayout('tempoChart', darkModeLayout);
 
-  // Update desempenho chart with additional axis properties
+  // Atualizar gráfico de desempenho com propriedades adicionais
   const desempenhoLayout = {
     ...darkModeLayout,
-    xaxis: {
-      ...darkModeLayout.xaxis,
-      title: 'Matéria',
-      tickangle: -45,
-    },
-    yaxis: {
-      ...darkModeLayout.yaxis,
-      title: 'Desempenho (%)',
-      range: [0, 110],
-      tickformat: '.0f',
-    },
+    shapes: [
+      {
+        type: 'line',
+        x0: 75,
+        y0: -0.5,
+        x1: 75,
+        y1: materias.length - 0.5,
+        line: {
+          color: 'rgba(255, 100, 100, 0.3)',
+          width: 2,
+          dash: 'dash',
+        },
+      },
+    ],
+    annotations: [
+      {
+        x: 75,
+        y: materias.length,
+        text: 'Meta 75%',
+        showarrow: false,
+        font: {
+          size: window.innerWidth <= 768 ? 10 : 12,
+          color: 'rgba(255, 100, 100, 0.5)',
+        },
+        xanchor: 'center',
+        yanchor: 'bottom',
+      },
+    ],
   };
   Plotly.relayout('desempenhoChart', desempenhoLayout);
 }
 
-// Add event listener for dark mode toggle to update charts
+// Adicionar event listener para toggle de modo escuro
 document.addEventListener('DOMContentLoaded', () => {
   const darkModeToggle = document.getElementById('darkModeToggle');
   if (darkModeToggle) {
@@ -248,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDarkMode) {
           updateChartsForDarkMode();
         } else {
-          // Reset to light mode
+          // Resetar para modo claro
           initCharts();
         }
       }, 100);
@@ -256,8 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Function to resize charts when window resizes
+// Função para redimensionar gráficos quando a janela é redimensionada
 window.addEventListener('resize', () => {
-  Plotly.Plots.resize('tempoChart');
-  Plotly.Plots.resize('desempenhoChart');
+  // Pequeno delay para garantir que o layout foi atualizado
+  setTimeout(() => {
+    initCharts(); // Re-inicializar para ajustar ao novo tamanho
+  }, 300);
+});
+
+// Função para lidar com mudança de orientação em dispositivos móveis
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    initCharts();
+  }, 500);
 });

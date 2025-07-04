@@ -322,18 +322,22 @@
           <!-- Gráficos -->
           <div class="grid grid-cols-1 gap-6 sm:gap-8">
             <div
-              class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700"
-              style="height: auto; min-height: 400px"
+              class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700 overflow-hidden"
             >
               <div
                 id="tempoChart"
-                style="height: 100%; min-height: 350px"
+                class="w-full"
+                style="min-height: 400px"
               ></div>
             </div>
             <div
-              class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700"
+              class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700 overflow-hidden"
             >
-              <div id="desempenhoChart" style="height: 320px"></div>
+              <div
+                id="desempenhoChart"
+                class="w-full"
+                style="min-height: 400px"
+              ></div>
             </div>
           </div>
         </div>
@@ -615,6 +619,7 @@
     <script src="./assets/js/timeTab.js"></script>
     <script src="./assets/js/performanceTab.js"></script>
     <script src="./assets/js/dashboard.js"></script>
+    <script src="./assets/js/chartHelpers.js"></script>
     <script src="./assets/js/routineTab.js"></script>
     <script src="./assets/js/notesTab.js"></script>
     <script src="./assets/js/reportGenerator.js"></script>
