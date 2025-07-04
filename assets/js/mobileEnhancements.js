@@ -182,27 +182,89 @@ function setupSwipeGestures() {
   let touchEndX = 0;
   let touchStartY = 0;
   let touchEndY = 0;
+  let touchStartTime = 0;
   let isSwiping = false;
   let swipeDirection = null;
+  let isScrolling = false;
+  let isHorizontalScroll = false;
+
+  const SWIPE_THRESHOLD = 100; // Aumentado de 75 para 100
+  const SWIPE_VELOCITY_THRESHOLD = 0.5; // pixels por millisegundo
+  const VERTICAL_THRESHOLD = 50; // threshold para detectar scroll vertical
+  const MIN_SWIPE_DISTANCE = 30; // distância mínima para começar a mostrar indicadores
 
   const handleSwipeStart = (e) => {
+    // Verificar se o toque começou em um elemento scrollável horizontalmente
+    const target = e.target;
+    const scrollableParent = target.closest(
+      '.table-mobile-scroll, .overflow-x-auto'
+    );
+
+    if (scrollableParent) {
+      const hasHorizontalScroll =
+        scrollableParent.scrollWidth > scrollableParent.clientWidth;
+      if (hasHorizontalScroll) {
+        isHorizontalScroll = true;
+        return; // Não processar swipe se houver scroll horizontal
+      }
+    }
+
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
+    touchStartTime = Date.now();
     isSwiping = false;
+    isScrolling = false;
+    isHorizontalScroll = false;
     swipeDirection = null;
   };
 
   const handleSwipeMove = (e) => {
-    if (!touchStartX) return;
+    if (!touchStartX || isHorizontalScroll) return;
 
     const currentX = e.changedTouches[0].screenX;
     const currentY = e.changedTouches[0].screenY;
     const diffX = touchStartX - currentX;
     const diffY = touchStartY - currentY;
 
-    // Check if horizontal swipe
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 25) {
-      isSwiping = true;
+    // Se ainda não determinou se é scroll ou swipe
+    if (!isSwiping && !isScrolling) {
+      // Se o movimento vertical é maior que o horizontal, é scroll
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+        isScrolling = true;
+        return;
+      }
+
+      // Se o movimento horizontal é significativo, é swipe
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+        isSwiping = true;
+
+        // Verificar se o elemento atual tem scroll horizontal
+        const target = document.elementFromPoint(currentX, currentY);
+        if (target) {
+          const scrollableParent = target.closest(
+            '.table-mobile-scroll, .overflow-x-auto'
+          );
+          if (
+            scrollableParent &&
+            scrollableParent.scrollWidth > scrollableParent.clientWidth
+          ) {
+            isSwiping = false;
+            isHorizontalScroll = true;
+            return;
+          }
+        }
+      }
+    }
+
+    // Se está fazendo scroll vertical, não processar como swipe
+    if (isScrolling) return;
+
+    // Processar swipe apenas se o movimento horizontal é dominante
+    if (isSwiping && Math.abs(diffX) > MIN_SWIPE_DISTANCE) {
+      // Prevenir scroll da página durante o swipe
+      if (Math.abs(diffX) > Math.abs(diffY) * 2) {
+        e.preventDefault();
+      }
 
       const mobileNavItems = document.querySelectorAll('.nav-mobile-item');
       const activeIndex = Array.from(mobileNavItems).findIndex((item) =>
@@ -213,23 +275,35 @@ function setupSwipeGestures() {
       const rightIndicator = document.getElementById('swipeIndicatorRight');
 
       // Determine swipe direction and show indicators
-      if (diffX > 0 && activeIndex < mobileNavItems.length - 1) {
+      if (
+        diffX > MIN_SWIPE_DISTANCE &&
+        activeIndex < mobileNavItems.length - 1
+      ) {
         // Swiping left (next tab)
         swipeDirection = 'left';
         if (rightIndicator) {
           rightIndicator.classList.add('show');
-          const opacity = Math.min(Math.abs(diffX) / 100, 1);
+          // Opacidade baseada na distância, mas com um máximo
+          const opacity = Math.min(
+            (Math.abs(diffX) - MIN_SWIPE_DISTANCE) /
+              (SWIPE_THRESHOLD - MIN_SWIPE_DISTANCE),
+            1
+          );
           rightIndicator.style.opacity = opacity;
         }
         if (leftIndicator) {
           leftIndicator.classList.remove('show');
         }
-      } else if (diffX < 0 && activeIndex > 0) {
+      } else if (diffX < -MIN_SWIPE_DISTANCE && activeIndex > 0) {
         // Swiping right (previous tab)
         swipeDirection = 'right';
         if (leftIndicator) {
           leftIndicator.classList.add('show');
-          const opacity = Math.min(Math.abs(diffX) / 100, 1);
+          const opacity = Math.min(
+            (Math.abs(diffX) - MIN_SWIPE_DISTANCE) /
+              (SWIPE_THRESHOLD - MIN_SWIPE_DISTANCE),
+            1
+          );
           leftIndicator.style.opacity = opacity;
         }
         if (rightIndicator) {
@@ -240,8 +314,14 @@ function setupSwipeGestures() {
   };
 
   const handleSwipeEnd = (e) => {
+    if (isHorizontalScroll) {
+      isHorizontalScroll = false;
+      return;
+    }
+
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
+    const touchEndTime = Date.now();
 
     // Hide indicators
     const leftIndicator = document.getElementById('swipeIndicatorLeft');
@@ -256,23 +336,65 @@ function setupSwipeGestures() {
       rightIndicator.style.opacity = '';
     }
 
-    if (!isSwiping) return;
+    if (!isSwiping || isScrolling) {
+      // Reset values
+      touchStartX = 0;
+      touchEndX = 0;
+      touchStartY = 0;
+      touchEndY = 0;
+      isSwiping = false;
+      isScrolling = false;
+      swipeDirection = null;
+      return;
+    }
 
-    const swipeThreshold = 75;
-    const diff = touchStartX - touchEndX;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+    const timeDiff = touchEndTime - touchStartTime;
+    const velocity = Math.abs(diffX) / timeDiff;
 
-    if (Math.abs(diff) > swipeThreshold) {
+    // Verificar se o swipe foi horizontal o suficiente
+    if (Math.abs(diffX) < Math.abs(diffY) * 1.5) {
+      // Reset values
+      touchStartX = 0;
+      touchEndX = 0;
+      touchStartY = 0;
+      touchEndY = 0;
+      isSwiping = false;
+      isScrolling = false;
+      swipeDirection = null;
+      return;
+    }
+
+    // Verificar threshold de distância E velocidade
+    const hasEnoughDistance = Math.abs(diffX) > SWIPE_THRESHOLD;
+    const hasEnoughVelocity = velocity > SWIPE_VELOCITY_THRESHOLD;
+
+    if (
+      hasEnoughDistance ||
+      (hasEnoughVelocity && Math.abs(diffX) > SWIPE_THRESHOLD * 0.7)
+    ) {
       const mobileNavItems = document.querySelectorAll('.nav-mobile-item');
       const activeIndex = Array.from(mobileNavItems).findIndex((item) =>
         item.classList.contains('active')
       );
 
-      if (diff > 0 && activeIndex < mobileNavItems.length - 1) {
+      if (diffX > 0 && activeIndex < mobileNavItems.length - 1) {
         // Swipe left - next tab
         mobileNavItems[activeIndex + 1].click();
-      } else if (diff < 0 && activeIndex > 0) {
+
+        // Vibrar se disponível
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
+      } else if (diffX < 0 && activeIndex > 0) {
         // Swipe right - previous tab
         mobileNavItems[activeIndex - 1].click();
+
+        // Vibrar se disponível
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
       }
     }
 
@@ -282,6 +404,7 @@ function setupSwipeGestures() {
     touchStartY = 0;
     touchEndY = 0;
     isSwiping = false;
+    isScrolling = false;
     swipeDirection = null;
   };
 
@@ -289,7 +412,7 @@ function setupSwipeGestures() {
   const main = document.querySelector('main');
   if (main) {
     main.addEventListener('touchstart', handleSwipeStart, { passive: true });
-    main.addEventListener('touchmove', handleSwipeMove, { passive: true });
+    main.addEventListener('touchmove', handleSwipeMove, { passive: false }); // passive: false para permitir preventDefault
     main.addEventListener('touchend', handleSwipeEnd, { passive: true });
     main.addEventListener('touchcancel', handleSwipeEnd, { passive: true });
   }

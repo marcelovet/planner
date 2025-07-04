@@ -437,3 +437,71 @@
     display: none;
   }
 }
+
+/* Horizontal scroll indicators for tables */
+.table-mobile-scroll {
+  position: relative;
+}
+
+.table-mobile-scroll::before,
+.table-mobile-scroll::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.table-mobile-scroll::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.dark .table-mobile-scroll::before {
+  background: linear-gradient(to right, rgba(31, 41, 55, 0.9), transparent);
+}
+
+.table-mobile-scroll::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.dark .table-mobile-scroll::after {
+  background: linear-gradient(to left, rgba(31, 41, 55, 0.9), transparent);
+}
+
+.table-mobile-scroll.has-scroll-left::before,
+.table-mobile-scroll.has-scroll-right::after {
+  opacity: 1;
+}
+
+/* Visual feedback for swipe threshold */
+.swipe-indicator-left.partial,
+.swipe-indicator-right.partial {
+  background: rgba(93, 92, 222, 0.05);
+}
+
+/* Swipe resistance indicator */
+.swipe-resistance-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.swipe-resistance-indicator.show {
+  opacity: 1;
+}
