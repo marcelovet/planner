@@ -144,6 +144,7 @@ function renderResumoSemana(semana) {
     'quinta',
     'sexta',
     'sabado',
+    'domingo',
   ];
   let totalHoras = 0;
   let disciplinasHoras = {};
